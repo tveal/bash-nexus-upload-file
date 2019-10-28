@@ -21,9 +21,10 @@ function getNexusServer() {
     case "$REMOTE_NEXUS" in
         y|Y|[yY][eE][sS] )
             echo "using REAL nexus with base url:"
-            echo "NEXUS_BASE_URL=$NEXUS_BASE_URL"
+            echo "NEXUS_REPO_URL=$NEXUS_REPO_URL"
+            NEXUS_SERVER="$NEXUS_REPO_URL"
             getNexusCreds
-            NEXUS_SERVER="https://$NEXUS_USER:$NEXUS_PASSWORD@$NEXUS_BASE_URL"
+            setupNexusSettingsXml
             ;;
         * )
             NEXUS_SERVER="file:///tmp/nexus-local"
@@ -36,9 +37,18 @@ function getNexusServer() {
 
 function getNexusCreds() {
     echo "--Need to get credentials for Nexus push--"
-    read -p "Username: " NEXUS_USER
-    read -sp "Password [hidden]: " NEXUS_PASSWORD
+    read -p "Username: " NEXUS_USR
+    read -sp "Password [hidden]: " NEXUS_PWD
     echo
+}
+
+function setupNexusSettingsXml() {
+    mkdir -p ~/.m2
+    local settingsFile=~/.m2/settings.xml
+    test -f "$settingsFile" || touch "$settingsFile"
+    # remove existing scripted settings https://stackoverflow.com/a/6287940
+    sed -i '/scripted-nexus-start/,/scripted-nexus-end/d' "$settingsFile"
+    cat "$THIS_DIR/lib/settings.xml" >> "$settingsFile"
 }
 
 function getSemVer() {
@@ -55,9 +65,11 @@ function publish() {
         -Dversion="$SEMVER" \
         -DgeneratePom=true \
         -Dpackaging="$MVN_PACKAGING" \
-        -DrepositoryId=nexus \
+        -DrepositoryId=scripted-nexus \
         -Durl="$NEXUS_SERVER" \
-        -Dfile="$FILE_DIR/$FILE_NAME"
+        -Dfile="$FILE_DIR/$FILE_NAME" \
+        -Drepo.usr="$NEXUS_USR" \
+        -Drepo.pwd="$NEXUS_PWD"
 }
 
 function validateProps() {
@@ -66,7 +78,7 @@ function validateProps() {
     validateProp "MVN_PACKAGING" "$MVN_PACKAGING" "\"zip\" (other examples: pom, jar, maven-plugin, ejb, war, ear, rar)"
     validateProp "GROUP_ID" "$GROUP_ID" "\"org.mybiz.feature\""
     validateProp "ARTIFACT_ID" "$ARTIFACT_ID" "\"really-cool-tool\""
-    validateProp "NEXUS_BASE_URL" "$NEXUS_BASE_URL" "\"nexus.mybiz.org/content/repositories/my-repo\""
+    validateProp "NEXUS_REPO_URL" "$NEXUS_REPO_URL" "\"https://nexus.mybiz.org/content/repositories/my-repo\""
 }
 
 function validateProp() {

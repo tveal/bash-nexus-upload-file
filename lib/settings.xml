@@ -1,0 +1,12 @@
+
+<!-- #scripted-nexus-start -->
+<settings>
+    <servers>
+        <server>
+            <id>scripted-nexus</id>
+            <username>${repo.usr}</username>
+            <password>${repo.pwd}</password>
+        </server>
+    </servers>
+</settings>
+<!-- #scripted-nexus-end -->

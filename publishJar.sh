@@ -7,6 +7,6 @@ MVN_PACKAGING="jar"
 
 GROUP_ID="org.mybiz.feature"
 ARTIFACT_ID="my-custom-jar"
-NEXUS_BASE_URL="nexus.mybiz.org/content/repositories/my-repo"
+NEXUS_REPO_URL="https://nexus.mybiz.org/content/repositories/my-repo"
 
 source $THIS_DIR/lib/publishSingleFile.sh

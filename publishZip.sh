@@ -7,6 +7,6 @@ MVN_PACKAGING="zip"
 
 GROUP_ID="org.mybiz.feature"
 ARTIFACT_ID="really-cool-tool"
-NEXUS_BASE_URL="nexus.mybiz.org/content/repositories/my-repo"
+NEXUS_REPO_URL="https://nexus.mybiz.org/content/repositories/my-repo"
 
 source $THIS_DIR/lib/publishSingleFile.sh

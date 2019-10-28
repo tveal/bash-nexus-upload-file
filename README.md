@@ -14,9 +14,8 @@ a Nexus server.
 ---
 
 NOTE: remote server option is configured to prompt you for your user/password to
-use in the final Nexus url. At time of writing, only local has been tested. You
-should check the implementation for your security needs.
-See [lib/publishSingleFile.sh](lib/publishSingleFile.sh)
+use in the final Nexus url. You should check the implementation for your security
+needs. See [lib/publishSingleFile.sh](lib/publishSingleFile.sh)
 
 ---
 
